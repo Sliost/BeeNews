@@ -1,0 +1,36 @@
+<ion-view view-title="BeeNews" ng-controller="loginCtrl">
+  <ion-content class="background">
+  	<div class="logo padding">
+  		<img src="img/logo_inp.png" alt="logo_inp" width="300" height="210">
+  	</div>
+  	<form class="list" ng-submit="login(email, pass, remember)">
+  		<div class="padding">
+	  		<label class='item item-input'>
+	  			<input type="text" placeholder="Email" ng-model="email">
+	  		</label>
+	  	</div>
+
+  		<div class="padding">
+	  		<label class="item item-input">
+			  <input type="password" placeholder="Mot de passe" ng-model="pass">
+			</label>
+	  	</div>
+
+	  	<ul class="padding">
+	  		<li class="item item-toggle">
+			     Se souvenir de moi
+			     <label class="toggle toggle-assertive">
+			       <input type="checkbox">
+			       <div class="track">
+			         <div class="handle"></div>
+			       </div>
+			     </label>
+			  </li>
+	  	</ul>
+
+  		<div class="padding">
+  			<button class="button button-block button-positive"> Connexion </button>
+  		</div>
+  	</form>
+  </ion-content>
+</ion-view>
