@@ -30,7 +30,14 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   .state('about', {
     url: "/about",
     templateUrl: "templates/about.html"
-  });
+  })
+  
+  .state('accueil', {
+	url: "/accueil",
+	templateUrl: "templates/accueil.html",
+	controller: 'accueilCtrl'
+  })
+  
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');

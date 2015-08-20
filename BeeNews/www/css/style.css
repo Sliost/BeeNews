@@ -4,4 +4,13 @@
   text-align: center; }
 
 .background {
-  background-color: #f6f2e3; }
+  background-color: #FBF9F0; }
+	
+ion-side-menu .item, ion-side-menu a.item {
+	color:white;
+	background-color:rgb(68,68,68);
+}
+
+a[class=item] {
+	padding-left:30px !important;
+}
