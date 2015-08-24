@@ -14,9 +14,4 @@ angular.module('starter.controllers', [])
 		var d = new Date();
 		return d.getHours()+':'+d.getMinutes();
 	};
-})
-.controller('indexCtrl',function($scope, $ionicSideMenuDelegate) {
-	$scope.closeMenu = function() {
-	    $ionicSideMenuDelegate.toggleLeft();
-	};
 });
