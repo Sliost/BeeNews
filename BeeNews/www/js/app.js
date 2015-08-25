@@ -27,15 +27,29 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     controller: 'loginCtrl'
   })
 
-  .state('about', {
+  .state('menu', {
+    url: "/menu",
+    abstract: true,
+    templateUrl: "templates/menu.html"
+  })
+
+  .state('menu.about', {
     url: "/about",
-    templateUrl: "templates/about.html"
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/about.html'
+      }
+    }
   })
   
-  .state('accueil', {
-	url: "/accueil",
-	templateUrl: "templates/accueil.html",
-	controller: 'accueilCtrl'
+  .state('menu.news', {
+  	url: "/news",
+  	views: {
+      'menuContent': {
+        templateUrl: 'templates/news.html',
+        controller: 'newsCtrl'
+      }
+    }
   })
   
 
