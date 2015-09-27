@@ -1,0 +1,6 @@
+MONGO_HOST: 'localhost:27017'
+MONGO_DB: beenews
+
+API_URL: 'http://localhost:5000'
+
+DEBUG: True
