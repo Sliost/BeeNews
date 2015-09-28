@@ -53,7 +53,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   })
 
   .state('menu.article', {
-    url: "/article",
+    url: "/article/:id",
     views: {
       'menuContent': {
         templateUrl: 'templates/article.html',
