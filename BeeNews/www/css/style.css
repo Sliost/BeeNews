@@ -14,3 +14,21 @@ ion-side-menu .item, ion-side-menu a.item {
 a[class=item] {
 	padding-left:30px !important;
 }
+
+.like-footer {
+	border-top: 1px solid grey;
+	padding-top:5px;
+	padding-bottom:5px;
+	margin-left:10px;
+	margin-right:10px;
+}
+
+.like-footer-pos {
+	color:green;
+}
+.like-footer-neg {
+	color:red;
+}
+.like-footer-coms {
+	color:blue;
+}
