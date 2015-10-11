@@ -27,6 +27,12 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     controller: 'loginCtrl'
   })
 
+  .state('signup', {
+    url: "/signup",
+    templateUrl: "templates/signup.html",
+    controller: 'signupCtrl'
+  })
+
   .state('menu', {
     url: "/menu",
     abstract: true,
@@ -43,11 +49,21 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   })
   
   .state('menu.news', {
-  	url: "/news",
+  	url: "/news/:author",
   	views: {
       'menuContent': {
         templateUrl: 'templates/news.html',
         controller: 'newsCtrl'
+      }
+    }
+  })
+
+  .state('menu.onews', {
+    url: "/onews",
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/onews.html',
+        controller: 'onewsCtrl'
       }
     }
   })
@@ -58,6 +74,26 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       'menuContent': {
         templateUrl: 'templates/article.html',
         controller: 'articleCtrl'
+      }
+    }
+  })
+
+  .state('menu.changepass', {
+    url: "/changepass",
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/changepass.html',
+        controller: 'changepassCtrl'
+      }
+    }
+  })
+
+  .state('menu.logout', {
+    url: "/logout",
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/logout.html',
+        controller: 'logoutCtrl'
       }
     }
   })

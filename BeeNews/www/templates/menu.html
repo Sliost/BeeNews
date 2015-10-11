@@ -1,4 +1,4 @@
-<ion-side-menus enable-menu-with-back-views="false">
+<ion-side-menus enable-menu-with-back-views="false" ng-controller="menuCtrl">
   <ion-side-menu-content>
     <ion-nav-bar class="bar-positive">
       <ion-nav-back-button>
@@ -23,11 +23,11 @@
           <span style="color:#26AEE6"> A LA UNE </span>
         </ion-item>
 
-        <ion-item class="item-dark" nav-clear menu-close href="#/menu/news">
+        <ion-item class="item-dark" nav-clear menu-close ng-click="fetchNews('all')">
           BeeNews
         </ion-item>
 
-        <ion-item class="item-dark" nav-clear menu-close href="#">
+        <ion-item class="item-dark" nav-clear menu-close href="#/menu/onews">
           News Officielles
         </ion-item>
 
@@ -35,13 +35,13 @@
           <span style="color:#26AEE6"> ASSOCIATIONS </span>
         </ion-item>
 
-        <ion-item class="item-dark" nav-clear menu-close href="#">
+        <ion-item class="item-dark" nav-clear menu-close ng-click="fetchNews('bde')">
           BDE
         </ion-item>
-        <ion-item class="item-dark" nav-clear menu-close href="#">
+        <ion-item class="item-dark" nav-clear menu-close ng-click="fetchNews('bds')">
           BDS
         </ion-item>
-        <ion-item class="item-dark" nav-clear menu-close href="#">
+        <ion-item class="item-dark" nav-clear menu-close ng-click="fetchNews('bda')">
           BDA
         </ion-item>
 
@@ -49,12 +49,12 @@
           <span style="color:#26AEE6" nav-clear> CLUBS </span>
         </ion-item>
 
-        <ion-item class="item-dark" nav-clear menu-close href="#">
+        <ion-item class="item-dark" nav-clear menu-close ng-click="fetchNews('bar')">
           Bar
         </ion-item>
 
-        <ion-item class="item-dark" nav-clear menu-close href="#">
-          Roulade
+        <ion-item class="item-dark" nav-clear menu-close ng-click="fetchNews('jteirb')">
+          JT'Eirb
         </ion-item>
 
         <ion-item nav-clear class="item-dark item-divider">
@@ -64,7 +64,10 @@
         <ion-item class="item-dark" nav-clear menu-close href="#/menu/about">
           A propos
         </ion-item>
-        <ion-item class="item-dark" nav-clear menu-close href="#">
+        <ion-item class="item-dark" nav-clear menu-close href="#/menu/changepass">
+          Changer mot de passe
+        </ion-item>
+        <ion-item class="item-dark" nav-clear menu-close href="#" ng-click="showConfirm()">
           Deconnexion
         </ion-item>
       </ion-list>

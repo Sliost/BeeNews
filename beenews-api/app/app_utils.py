@@ -16,13 +16,9 @@ def requires_token(f):
         :param kwargs: initial f's kwargs
         :return: an abortion if unauthorized or f
         """
-        if 'X-GeodataAPI-Token' not in request.headers:
+        if 'X-BeenewsAPI-Token' not in request.headers:
             abort(418, {'_other': ['unauthorized']})
 
-        # TODO if possible do not use mongo but a token signed with secret key. Difficult to implement DELETE then...
-        if request.headers['X-BeenewsAPI-Token'] == '123':
-            return f(*args, **kwargs)
-
-        abort(418, {'_other': ['unauthorized']})
+        return f(*args, **kwargs)
 
     return decorated

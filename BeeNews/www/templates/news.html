@@ -1,18 +1,19 @@
 <ion-view view-title="A la une" ng-controller="newsCtrl">
   <ion-content>
-  	<div class="padding-horizontal">
-  		<span style="color:red"><i class="icon ion-social-rss"></i> {{heure()}}</span> Les résultats des campagnes BDS viennent de tomber, Bee'In Sport remporte haut la main
-  	</div>
-  	<div ng-click="afficheArticle(row.id)" class="list card row" style="margin:0">	
-  		<div class="col">
-  			<img src="img/presentateur.png" width="100">
-  		</div>
-  		
-  		<div class="col col-67">
-  			<div style="color:#26AEE6;font-size:14px;">BDE</div>
-  			<div style="line-height:1">"Et toi tu pars où en stage ?" Découvrez la nouvelle initiative de votre BDE</div>
-  			<div style="text-align:bottom;font-style:italic;color:grey">3 commentaires</div>
-  		</div>
-  	</div>
+    <ion-refresher pulling-text="Actualiser" on-refresh="doRefresh()">
+    </ion-refresher>
+    <div class="list card">
+      <div ng-repeat="new in news" class="item row padding" style="margin-bottom: 5px;" ng-click="showArticle($index)">
+        <div class="col">
+            <img src="img/ic_news.png" width="80" height="80" style="background-color:#26AEE6">
+        </div>
+        
+        <div class="col col-67">
+          <div style="color:#26AEE6;font-size:14px;">{{new.data.title}}</div>
+          <div style="line-height:1">{{new.time}}</div>
+          <div style="text-align:bottom;font-style:italic;color:grey" class="item-text-wrap">{{new.snip}}</div>
+        </div>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

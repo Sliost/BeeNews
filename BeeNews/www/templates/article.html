@@ -1,33 +1,37 @@
 <ion-view view-title="Article" ng-controller="articleCtrl">
   <ion-content>
   	<div class="padding text-center">
-  		<span style="text-transform:uppercase;font-weight:bold;font-size:1.2em;">{{article.titre}}</div>
+  		<span style="text-transform:uppercase;font-weight:bold;font-size:1.2em;color:#26AEE6;">{{article.title}}</div>
   	</div>
-  	<div class="padding-horizontal">
-  			<img src="img/presentateur2.png" width="100%">
-  		</div>
+  	<div class="padding-horizontal" align="center">
+  			<img src="img/ic_news.png" width="200" height="200" style="background-color:#26AEE6">
+  	</div>
   		
-  		
-  	<div class="padding-horizontal" style="margin-bottom:50px;text-align:justify">
-      <p>Pendant notre passage à l’EIRB-MMK, on doit tous passer quelques semaines à l’étranger. Du coup, beaucoup de monde commence à se demander où partir, à faire ses dossiers et à avoir des réponses.
-Et puis en plein préparatifs pour cet été, on se demande aussi où vont partir les potos et si va y avoir des visages connus dans notre voyage à l’autre bout du monde.</p><p>
-Pour ne pas avoir à poser 20 000 fois la même question à chaque personne qu’on croise, on vous a fait un petit formulaire qui vous permettra de savoir où les autres partent en stage.</p><p>
-Si vous êtes intéressés, munissez vous de vos petits doigts boudinés et remplissez le formulaire disponible à cette adresse:<br>
-<a href="http://goo.gl/forms/87ERVp23GS">http://goo.gl/forms/87ERVp23GS</a></p><p>
-Les résultats peuvent eux être consultés à l’adresse suivante:
-<a href="http://goo.gl/jm6CHG">http://goo.gl/jm6CHG</a></p>
-<p>Alors que ca soit pour faire une collocation, échanger des bons plans, ou juste faire le tour des bars de la ville avec d’autres gens de l’école, n’hesitez pas à remplir le document <br>A vos claviers !</p>
+  	<div class="padding" style="margin-bottom:50px;">
+      <pre>{{article.data.text}}</pre>
     </div>
+
     <div class="like-footer">
       <div class="text-left" style="display:inline-block;">
-      <span class="like-footer-pos">580 J'aime</span> | <span class="like-footer-neg">6 J'aime Pas</span>
+        <button class="button button-balanced like-footer-pos" ng-click="like_or_dislike('like')" ng-disabled="like_disable">{{like_text}}</button>
+      </div>
+
+      <div class="text-right" style="display:inline-block;float:right;">
+        <button class="button button-assertive like-footer-neg" ng-click="like_or_dislike('dislike')" ng-disabled="dislike_disable">{{dislike_text}}</button>
+      </div>
     </div>
-    <div class="text-right" style="display:inline-block;float:right;">
-      <span class="like-footer-coms">Voir commentaires</span>
-    </div>
+
+    <div class="like-footer">
+      <div class="text-left" style="display:inline-block;">
+        <span class="like-footer-pos">{{article.likes}} J'aime</span> |
+        <span class="like-footer-neg">{{article.dislikes}} J'aime Pas</span>
+      </div>
+      <div class="text-right" style="display:inline-block;float:right;">
+        <a href="#" class="like-footer-coms" ng-click="openComment()">Voir commentaires</a>
+      </div>
   </div>
     <div class="padding-horizontal text-right like-footer" >
-      Cet article vous a été proposé par : BDE
+      Cet article vous a été proposé par : <span style="color:#26AEE6;">{{article.data.author}}</span>
     </div>
   </ion-content>
 </ion-view>

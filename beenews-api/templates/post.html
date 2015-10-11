@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html ngApp="postApp">
+<head>
+	{% include 'headers.html' %}
+</head>
+<body>
+    <div class="logo padding">
+  		<img src="{{ url_for('static', filename='img/logo_inp.png') }}" alt="logo_inp" width="300" height="210">
+  	</div>
+
+  	<div style="text-align:center">
+  		<h1 style="font-size:4em">Bee<span style="color:#26AEE6">News</span></h1>
+
+        <h2 style="font-size:2em"><span style="color:#26AEE6">Poster un article</span></h2>
+  	</div>
+
+
+  	<form class="list" ng-submit="post()">
+
+  		<div class="list list-inset">
+			<label class="item item-input">
+				<input type="text" placeholder="Titre" ng-model="postController.articleData.title" required>
+			</label>
+			<label class="item item-input">
+				<input type="text" placeholder="Auteur" ng-model="postController.articleData.author" required>
+			</label>
+			<label class="item item-input">
+				<textarea style="height:300px;" placeholder="Texte" ng-model="postController.articleData.text" required></textarea>
+			</label>
+		</div>
+
+        <div style="text-align:center">
+            <span style="color:#26AEE6">Veuillez confirmer votre identité : </span>
+        </div>
+
+        <div class="list list-inset">
+			<label class="item item-input">
+				<input type="email" placeholder="Email @enseirb-matmeca.fr" ng-model="postController.userData.email" required>
+			</label>
+			<label class="item item-input">
+				<input type="password" placeholder="Mot de passe" ng-model="postController.userData.password" required>
+			</label>
+		</div>
+		
+  		<div class="padding">
+  			<button class="button button-block button-positive"> Poster l'article </button>
+  		</div>
+  	</form>
+</body>
+</html>

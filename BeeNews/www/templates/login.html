@@ -1,4 +1,4 @@
-<ion-view view-title="BeeNews" ng-controller="loginCtrl">
+<ion-view view-title="BeeNews" ng-controller="loginCtrl" ng-init="loginWithToken()">
   <ion-content class="background">
   	<div class="logo padding">
   		<img src="img/logo_inp.png" alt="logo_inp" width="300" height="210">
@@ -7,30 +7,38 @@
   	<div style="text-align:center">
   		<h1 style="font-size:4em">Bee<span style="color:#26AEE6">News</span></h1>
   	</div>
-  	<form class="list" ng-submit="login(email, pass, remember)">
+  	<form class="list" ng-submit="login(loginData)">
 		
   		<div class="list list-inset">
 		  <label class="item item-input">
-		    <input type="text" placeholder="Email" ng-model="email">
+		    <input type="email" placeholder="Email" ng-model="loginData.email" required>
 		  </label>
 		  <label class="item item-input">
-		    <input type="text" placeholder="Mot de passe" ng-model="pass">
+		    <input type="password" placeholder="Mot de passe" ng-model="loginData.password" required>
 		  </label>
 		</div>
 		<ul class="list padding" >
 	  		<li class="item item-checkbox" id="remember-me">
 	  		Se souvenir de moi
 		     <label class="checkbox">
-		       <input type="checkbox" >
+		       <input type="checkbox" ng-model="loginData.remember">
 		     </label>
 		    
 		  </li>
 	  	</ul>
-	  	
   		
   		<div class="padding">
   			<button class="button button-block button-positive"> Connexion </button>
   		</div>
   	</form>
+
+  	<div class="padding" style="text-align:center">
+  		<a href="#/signup">Inscription</a>
+  	</div>
+
+    <div class="padding" style="text-align:center">
+      <a href="#" ng-click="openLPass()"> Mot de passe oublié </a>
+    </div>
+
   </ion-content>
 </ion-view>
