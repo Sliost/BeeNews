@@ -333,10 +333,10 @@ def reinit_pass():
         try:
             beeuser = BeeUser.objects.get(email=username)
             password = SomeUtils.generate_pass()
-            beeuser.password = password
+            beeuser.password = SomeUtils.pass_encrypt(password)
             beeuser.token = ''
             beeuser.save()
-            SomeUtils.send_mail(username, SomeUtils.pass_encrypt(password), 'Password Forgotten')
+            SomeUtils.send_mail(username, password, 'Password Forgotten')
             return jsonify({'success': 'yes', 'more': 'Password sent successfully'})
         except DoesNotExist:
             return jsonify({'success': 'no', 'more': 'Email invalid'})
