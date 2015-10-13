@@ -32,8 +32,9 @@ angular.module('postApp', [])
         }).then(function successCallback(response) {
 		    if (response.data.success == 'yes') {
 		        alert('Post Successful. Wait for validation of the admin');
-		        articleData = defaultArticleData;
+		        $scope.articleData = defaultArticleData;
 		        $scope.userData = defaultUserData;
+		        $scope.form.$setPristine();
 		    } else {
 		        alert(response.data.more);
 		    }
