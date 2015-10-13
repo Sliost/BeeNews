@@ -1,5 +1,5 @@
 angular.module('postApp', [])
-  .controller('postController', function($scope, $http) {
+  .controller('postController', function($scope, $http, $window) {
     var defaultArticleData = {
       category : 'news',
       type : 'article',
@@ -35,6 +35,7 @@ angular.module('postApp', [])
 		        $scope.articleData = defaultArticleData;
 		        $scope.userData = defaultUserData;
 		        $scope.form.$setPristine();
+		        $window.location.reload();
 		    } else {
 		        alert(response.data.more);
 		    }
