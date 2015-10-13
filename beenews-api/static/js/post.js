@@ -21,7 +21,7 @@ angular.module('postApp', [])
     $scope.post = function() {
         $http({
 		    method: 'POST',
-		    url: 'http://localhost:8000/web/post',
+		    url: 'http://178.62.61.89/web/post',
 		    headers: {
                 'Content-Type': 'application/json'
             },
