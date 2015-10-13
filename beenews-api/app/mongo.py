@@ -318,7 +318,7 @@ def change_pass():
         beeuser = BeeUser.objects.get(email=username, token=token)
         if not SomeUtils.pass_decrypt(old_password, beeuser.password):
             return jsonify({'success': 'no', 'more': 'Password invalid'})
-        beeuser.password = new_password
+        beeuser.password = SomeUtils.pass_encrypt(new_password)
         beeuser.save()
         return jsonify({'success': 'yes', 'more': 'Password change successful'})
     except DoesNotExist:
