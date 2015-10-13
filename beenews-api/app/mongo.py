@@ -315,7 +315,9 @@ def change_pass():
     token = request.headers.get('X-BeenewsAPI-Token', None)
 
     try:
-        beeuser = BeeUser.objects.get(email=username, password=old_password, token=token)
+        beeuser = BeeUser.objects.get(email=username, token=token)
+        if not SomeUtils.pass_decrypt(old_password, beeuser.password):
+            return jsonify({'success': 'no', 'more': 'Password invalid'})
         beeuser.password = new_password
         beeuser.save()
         return jsonify({'success': 'yes', 'more': 'Password change successful'})
