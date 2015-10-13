@@ -633,7 +633,7 @@ def web_post():
     headers = {'Content-Type': 'application/json',
                'X-BeenewsAPI-Token': web_token}
 
-    url = 'http://localhost:5000/add'
+    url = 'http://178.62.61.89/add'
 
     r = requests.post(url=url, data=article, headers=headers)
     return r.json()
