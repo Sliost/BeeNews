@@ -608,6 +608,25 @@ def change_access():
     else:
         return jsonify({'success': 'yes', 'more': 'Password incorrect'})
 
+@mongo.route('/set_visibility', methods=['POST'])
+def set_visibility():
+    infos = request.get_json()
+    beedoc = infos['beedoc']
+    password = infos['password']
+    visibility = infos['visibility']
+
+    # Change this later
+    if password == 'ladotevirherveux':
+        try:
+            beedoc = BeeDoc.objects.get(id=beedoc)
+            beedoc.visibility = int(visibility)
+            beedoc.save()
+            return jsonify({'success': 'yes', 'more': 'Visibility changed to ' + str(visibility)})
+        except DoesNotExist:
+            return jsonify({'success': 'no', 'more': 'BeeDoc does not exist'})
+    else:
+        return jsonify({'success': 'yes', 'more': 'Password incorrect'})
+
 # ------------------------------------------------ WEB FUNCTIONS ------------------------------------------------ #
 @mongo.route('/web/home')
 def web_home():
@@ -630,14 +649,12 @@ def web_post():
     except DoesNotExist:
         return jsonify({'success': 'no', 'more': 'Email invalid or not in database'})
 
-    web_token = beeuser.web_token
+    category = article['category']
+    doc_type = article['type']
+    data = article['data']
 
-    headers = {'Content-Type': 'application/json',
-               'X-BeenewsAPI-Token': web_token}
-
-    url = 'http://localhost:8000/add'
-
-    r = requests.post(url=url, data=article, headers=headers)
-    return r.json()
-
-
+    if beeuser.access >= 1:
+        response = add_wargs(category, doc_type, data)
+        return response
+    else:
+        return jsonify({'success': 'no', 'more': 'Access denied'})
