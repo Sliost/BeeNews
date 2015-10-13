@@ -1,8 +1,8 @@
 angular.module('postApp', [])
   .controller('postController', function($scope, $http) {
     var defaultArticleData = {
-      category : '',
-      type : '',
+      category : 'news',
+      type : 'article',
       data: {
         title: '',
         author: '',
