@@ -57,6 +57,7 @@ class BeeUser(Document):
     password = StringField(required=True)
     access = IntField(required=True, default=1)     # 0 reader, 1 writer, 2 admin
     token = StringField(required=True, default='123')
+    web_token = StringField(required=True, default='123')
 
     meta = {
         'indexes': [
@@ -85,6 +86,7 @@ class BeeDoc(Document):
     comments = IntField(required=True, default=0)           # Number of comments
     likes = IntField(required=True, default=0)              # Number of likes
     dislikes = IntField(required=True, default=0)           # Number of dislikes
+    visibility = IntField(required=True, default=0)         # 0 not visible, 1 visible
     data = DynamicField(default={})
     meta = {
         'indexes': [
@@ -172,6 +174,7 @@ def sign_up():
             return jsonify({'success': 'no', 'more': 'Email already used'})
         except DoesNotExist:
             beeuser = BeeUser(pseudo=pseudo, email=username, password=SomeUtils.pass_encrypt(password))
+            beeuser.web_token = SomeUtils.genarate_token(username, 12)
             beeuser.save()
             sign_up_date = long(datetime.now().strftime("%s"))
             calendar = Calendar(email=username, sign_up_date=sign_up_date, last_seen=sign_up_date)
@@ -201,7 +204,6 @@ def login():
                 beeuser = BeeUser.objects.get(email=username, token=old_token)
             else:
                 password = data['password']
-                print password, SomeUtils.pass_encrypt(password)
                 remember = data['remember']
                 beeuser = BeeUser.objects.get(email=username)
                 if not SomeUtils.pass_decrypt(password, beeuser.password):
@@ -217,6 +219,7 @@ def login():
                 return jsonify({'success': 'no', 'more': 'Connection data are incoherent'})
 
             beeuser.token = token
+            beeuser.web_token = SomeUtils.genarate_token(username, 12)
             beeuser.save()
             try:
                 calendar = Calendar.objects.get(email=username)
@@ -358,13 +361,16 @@ def add():
     if token:
         try:
             beeuser = BeeUser.objects.get(email=username, token=token)
-            if beeuser.access >= 1:
-                response = add_wargs(category, doc_type, data)
-                return response
-            else:
-                return jsonify({'success': 'no', 'more': 'Access denied'})
         except DoesNotExist:
-            return jsonify({'success': 'no', 'more': 'Token/email invalid'})
+            try:
+                beeuser = BeeUser.objects.get(email=username, web_token=token)
+            except DoesNotExist:
+                return jsonify({'success': 'no', 'more': 'Token/email invalid'})
+        if beeuser.access >= 1:
+            response = add_wargs(category, doc_type, data)
+            return response
+        else:
+            return jsonify({'success': 'no', 'more': 'Access denied'})
     else:
         return jsonify({'success': 'no', 'more': 'No token given'})
 
@@ -431,9 +437,9 @@ def get_beedoc():
             if category_name == 'news':
                 if author in CategoryUtils.RECOGNIZED_AUTHOR:
                     if author == 'all':
-                        beedocs = BeeDoc.objects(category=category)[offset:offset+10]
+                        beedocs = BeeDoc.objects(category=category, visibility=1)[offset:offset+10]
                     else:
-                        beedocs = BeeDoc.objects(category=category, author=author)[offset:offset+10]
+                        beedocs = BeeDoc.objects(category=category, author=author, visibility=1)[offset:offset+10]
                     response = [SomeUtils.beedoc_to_dict(beedoc) for beedoc in beedocs]
                     if beedocs:
                         return jsonify({'success': 'yes', 'more': response})
@@ -442,7 +448,7 @@ def get_beedoc():
                 else:
                     return jsonify({'success': 'no', 'more': 'Unauthorized author asked'})
             else:
-                beedocs = BeeDoc.objects(category=category, author='eirbmmk')[offset:offset+10]
+                beedocs = BeeDoc.objects(category=category, author='eirbmmk', visibility=1)[offset:offset+10]
                 if beedocs:
                     response = [SomeUtils.beedoc_to_dict(beedoc) for beedoc in beedocs]
                     return jsonify({'success': 'yes', 'more': response})
@@ -610,7 +616,7 @@ def web_home():
 def web_post():
     infos = request.get_json()
     user = infos['userData']
-    article = infos['arrticleData']
+    article = infos['articleData']
 
     email = user['email']
     password = user['password']
@@ -622,10 +628,11 @@ def web_post():
     except DoesNotExist:
         return jsonify({'success': 'no', 'more': 'Email invalid or not in database'})
 
-    token = beeuser.token
+    web_token = beeuser.web_token
 
     headers = {'Content-Type': 'application/json',
-               'X-BeenewsAPI-Token': token}
+               'X-BeenewsAPI-Token': web_token}
+
     url = 'http://localhost:5000/add'
 
     r = requests.post(url=url, data=article, headers=headers)

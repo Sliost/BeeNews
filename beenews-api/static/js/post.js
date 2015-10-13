@@ -1,12 +1,12 @@
 angular.module('postApp', [])
-  .controller('postController', function() {
+  .controller('postController', function($scope, $http) {
     var defaultArticleData = {
-      category : 'news',
-      type : 'article',
+      category : '',
+      type : '',
       data: {
-        title: 'Bip',
-        author: 'Bop',
-        text: 'Bap'
+        title: '',
+        author: '',
+        text: ''
       }
     };
 
@@ -15,10 +15,10 @@ angular.module('postApp', [])
       password: ''
     };
 
-    var userData = defaultUserData;
-    var articleData = defaultArticleData;
+    $scope.userData = defaultUserData;
+    $scope.articleData = defaultArticleData;
 
-    post = function() {
+    $scope.post = function() {
         $http({
 		    method: 'POST',
 		    url: 'http://localhost:5000/web/post',
@@ -26,18 +26,17 @@ angular.module('postApp', [])
                 'Content-Type': 'application/json'
             },
 		    data: {
-		        userData: userData,
-		        articleData: articleData
+		        userData: $scope.userData,
+		        articleData: $scope.articleData
 		    }
         }).then(function successCallback(response) {
 		    if (response.data.success == 'yes') {
-		        alert('Post Successful');
+		        alert('Post Successful. Wait for validation of the admin');
 		        articleData = defaultArticleData;
-		        userData = defaultUserData;
+		        $scope.userData = defaultUserData;
 		    } else {
 		        alert(response.data.more);
 		    }
-			$scope.onews = $scope.createSnip(response.data.onews);
         }, function errorCallback(response) {
 		    alert('An error occured. Retry later');
 		});
