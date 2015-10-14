@@ -88,7 +88,7 @@ class BeeDoc(Document):
         The Article class to use in mongodb
     """
     id = StringField(required=True, primary_key=True, unique=True)
-    author = StringField(required=True)  # mail of the author
+    author = StringField(required=True)  # Pseudo of the author
     alias = StringField(required=True, default='all')
     title = StringField(required=True)
     category = ReferenceField(Category, required=True)  # News, Official News, Gossip
@@ -731,7 +731,7 @@ def web_post():
     category = article['category']
     doc_type = article['type']
     data = article['data']
-    data['author'] = beeuser.email
+    data['author'] = beeuser.pseudo
 
     if beeuser.access >= 1:
         response = add_wargs(category, doc_type, data)
