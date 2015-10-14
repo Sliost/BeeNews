@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% include 'headers.html' %}
+</head>
+<body>
+    <div class="logo padding">
+  		<img src="{{ url_for('static', filename='img/logo_inp.png') }}" alt="logo_inp" width="300" height="210">
+  	</div>
+
+  	<div style="text-align:center">
+  		<h1 style="font-size:4em">Bee<span style="color:#26AEE6">News</span></h1>
+
+        <h2 style="font-size:2em"><span style="color:#26AEE6">Bienvenue sur BeeNews</span></h2>
+  	</div>
+
+    <div style="text-align:center">
+  		<pre>
+            Ceci est la béta de l'application BeeNews. Vous pourrez....
+        </pre>
+  	</div>
+
+    <div style="text-align:center">
+  		<a href="#">Télécharger l'apk</a>
+  	</div>
+
+    <div class="block-positive" style="text-align:center">
+  		<a href="{{url_for('mongo.web_post_page')}}"><span style="color:#26AEE6">Poster un article</span></a>
+  	</div>
+
+</body>
+</html>

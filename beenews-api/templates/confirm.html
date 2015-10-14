@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% include 'headers.html' %}
+</head>
+<body>
+    <div class="logo padding">
+  		<img src="{{ url_for('static', filename='img/logo_inp.png') }}" alt="logo_inp" width="300" height="210">
+  	</div>
+
+  	<div style="text-align:center">
+  		<h1 style="font-size:4em">Bee<span style="color:#26AEE6">News</span></h1>
+
+        <h2 style="font-size:2em"><span style="color:#26AEE6">Votre article a bien été posté</span></h2>
+  	</div>
+
+    <div style="text-align:center">
+  		<pre>
+            Cependant, il nécessite une validation de la part d'un administrateur. Ceci sera fait dans les plus brefs
+            délais. Votre article peut être refusé en fonction de son contenu.
+
+            Vous recevrez un mail en cas de validation ou de refus.
+
+            Merci d'avoir publié.
+        </pre>
+  	</div>
+
+    <div style="text-align:center">
+  		<a href="{{url_for('mongo.web_post_page')}}"><span style="color:#26AEE6">Poster un autre article</span></a>
+  	</div>
+
+</body>
+</html>

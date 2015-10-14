@@ -19,8 +19,7 @@ angular.module('postApp', [])
     $scope.articleData = defaultArticleData;
 
     $scope.post = function() {
-        alert($scope.articleData.data.alias);
-        $http({
+<        $http({
 		    method: 'POST',
 		    url: 'http://178.62.61.89/web/post',
 		    headers: {
@@ -36,7 +35,7 @@ angular.module('postApp', [])
 		        $scope.articleData = defaultArticleData;
 		        $scope.userData = defaultUserData;
 		        $scope.form.$setPristine();
-		        $window.location.reload();
+		        $window.location.href = 'http://178.62.61.89/web/confirm';
 		    } else {
 		        alert(response.data.more);
 		    }
