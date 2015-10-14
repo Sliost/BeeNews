@@ -5,7 +5,7 @@ angular.module('postApp', [])
       type : 'article',
       data: {
         title: '',
-        author: '',
+        alias: '',
         text: ''
       }
     };
@@ -19,6 +19,7 @@ angular.module('postApp', [])
     $scope.articleData = defaultArticleData;
 
     $scope.post = function() {
+        alert(articleData.data.alias);
         $http({
 		    method: 'POST',
 		    url: 'http://178.62.61.89/web/post',
