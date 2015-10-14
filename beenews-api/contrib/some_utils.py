@@ -138,7 +138,7 @@ class SomeUtils:
             return False
 
     @staticmethod
-    def send_mail(email, password, title):
+    def send_mail(email, data, title, msg_type):
         """
         Send mail from beenewseirb@gmail.com
         :param email:
@@ -147,10 +147,20 @@ class SomeUtils:
         import smtplib
         import string
 
+        msg = None
+
         fromaddr = 'BeeNews'
         subject = title
-        msg = 'Hi!\nThank you for subscribing to BeeNews.\nHere is your password: ' + password + \
-              '\nYou need to change it ASAP\nEnjoy!'
+        motifs = {
+            1: 'Hi!\n\nThank you for subscribing to BeeNews.\nHere is your password: ' + data + '\n\nYou need to change it ASAP.\n\nEnjoy!\n\nBeeNews',
+            2: 'Hi again!\n\nYou have requested a password change.\nHere is your new password: ' + data + '\n\nYou need to change it ASAP too.\n\nEnjoy!\n\nBeeNews',
+            3: 'Hi!\n\nYou have submitted an article. Please wait for the admin to validate it.\n\nIt\'ll be done ASAP.\n\nThanks for publishing!\n\nBeeNews',
+            4: 'Hi Admin!\n\nAn article has been submitted.\nbeedoc: ' + data + 'Please validate or delete it.\n\nBeeNews',
+            5: 'Hi!\n\nYour article has been deleted due to its inappropriate content. Try again once!\n\nBeeNews',
+            6: 'Hi!\n\nYour article has been validated. Thanks for publishing!\n\nBeeNews'
+        }
+        if 1 <= msg_type <= 6:
+            msg = motifs[msg_type]
         body = string.join((
             "From: %s" % fromaddr,
             "To: %s" % email,

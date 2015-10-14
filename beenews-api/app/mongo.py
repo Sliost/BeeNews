@@ -1,5 +1,4 @@
 import json
-import requests
 from flask import Blueprint, request, jsonify, render_template, url_for
 from mongoengine import *
 from .app_utils import requires_token
@@ -15,6 +14,7 @@ def connect_to_base(setup_state):
     CONF = setup_state.app.config
     connect(db=CONF['MONGO_DB'], host=CONF['MONGO_HOST'], port=27017)
     register_connection(alias='default', name=CONF['MONGO_DB'], host=CONF['MONGO_HOST'], port=27017)
+
 
 # ------------------------------------------------- MONGO DOCUMENTS ------------------------------------------------- #
 class Calendar(Document):
@@ -32,6 +32,12 @@ class Calendar(Document):
         'ordering': ['+email']
     }
 
+
+class RecognizedAuthor(Document):
+    email = StringField(required=True)
+    alias = StringField(required=True, default='all')
+
+
 class Likes(Document):
     beedoc = StringField(required=True)
     user = StringField(required=True)
@@ -48,6 +54,7 @@ class Likes(Document):
         'ordering': ['+time']
     }
 
+
 class BeeUser(Document):
     """
         Accounts
@@ -55,7 +62,7 @@ class BeeUser(Document):
     pseudo = StringField(required=True, unique=True)
     email = StringField(required=True, unique=True)
     password = StringField(required=True)
-    access = IntField(required=True, default=1)     # 0 reader, 1 writer, 2 admin
+    access = IntField(required=True, default=1)  # 0 reader, 1 writer, 2 mode, 3 admin
     token = StringField(required=True, default='123')
     web_token = StringField(required=True, default='123')
 
@@ -68,25 +75,28 @@ class BeeUser(Document):
         'ordering': ['+email']
     }
 
+
 class Category(Document):
     """
         Categories: News, oNews, Gossip
     """
     name = StringField(required=True)
 
+
 class BeeDoc(Document):
     """
         The Article class to use in mongodb
     """
     id = StringField(required=True, primary_key=True, unique=True)
-    author = StringField(required=True)                     # BDE, BDS, BAR .....
+    author = StringField(required=True)  # mail of the author
+    alias = StringField(required=True, default='all')
     title = StringField(required=True)
-    category = ReferenceField(Category, required=True)      # News, Official News, Gossip
+    category = ReferenceField(Category, required=True)  # News, Official News, Gossip
     time = LongField(required=True)
-    comments = IntField(required=True, default=0)           # Number of comments
-    likes = IntField(required=True, default=0)              # Number of likes
-    dislikes = IntField(required=True, default=0)           # Number of dislikes
-    visibility = IntField(required=True, default=0)         # 0 not visible, 1 visible
+    comments = IntField(required=True, default=0)  # Number of comments
+    likes = IntField(required=True, default=0)  # Number of likes
+    dislikes = IntField(required=True, default=0)  # Number of dislikes
+    visibility = IntField(required=True, default=0)  # 0 not visible, 1 visible
     data = DynamicField(default={})
     meta = {
         'indexes': [
@@ -108,6 +118,7 @@ class BeeDoc(Document):
         for k in list(args):
             self.data[k] = args[k]
         self._mark_as_changed('data')
+
 
 class FlashNews(Document):
     id = StringField(required=True, primary_key=True, unique=True)
@@ -152,6 +163,7 @@ class Comment(Document):
             self.data[k] = args[k]
         self._mark_as_changed('data')
 
+
 # -------------------------------------------------- USER FUNCTIONS -------------------------------------------------- #
 @mongo.route('/sign_up', methods=['POST'])
 def sign_up():
@@ -179,10 +191,13 @@ def sign_up():
             sign_up_date = long(datetime.now().strftime("%s"))
             calendar = Calendar(email=username, sign_up_date=sign_up_date, last_seen=sign_up_date)
             calendar.save()
+            rec_author = RecognizedAuthor(email=username, alias='all')
+            rec_author.save()
 
-    SomeUtils.send_mail(username, password, 'Welcome to BeeNewsFamily')
+    SomeUtils.send_mail(username, password, 'Welcome to BeeNewsFamily', 1)
 
     return jsonify({'success': 'yes', 'more': 'Sign up successful'})
+
 
 @mongo.route('/login', methods=['POST'])
 def login():
@@ -237,6 +252,7 @@ def login():
     else:
         return jsonify({'success': 'no', 'more': 'Use the same email asked during sign up'})
 
+
 @mongo.route('/actualize_token', methods=['POST'])
 @requires_token
 def actualize_token():
@@ -277,6 +293,7 @@ def actualize_token():
     else:
         return jsonify({'success': 'no', 'more': 'Use the same email asked during sign up'})
 
+
 @mongo.route('/logout', methods=['POST'])
 @requires_token
 def logout():
@@ -303,6 +320,7 @@ def logout():
     except DoesNotExist:
         return jsonify({'success': 'no', 'more': 'Email or token invalid'})
 
+
 @mongo.route('/change_pass', methods=['POST'])
 @requires_token
 def change_pass():
@@ -324,6 +342,7 @@ def change_pass():
     except DoesNotExist:
         return jsonify({'success': 'no', 'more': 'Email or password invalid'})
 
+
 @mongo.route('/reinit_pass', methods=['POST'])
 @requires_token
 def reinit_pass():
@@ -341,12 +360,13 @@ def reinit_pass():
             beeuser.password = SomeUtils.pass_encrypt(password)
             beeuser.token = ''
             beeuser.save()
-            SomeUtils.send_mail(username, password, 'Password Forgotten')
+            SomeUtils.send_mail(username, password, 'Password Forgotten', 2)
             return jsonify({'success': 'yes', 'more': 'Password sent successfully'})
         except DoesNotExist:
             return jsonify({'success': 'no', 'more': 'Email invalid'})
     except DoesNotExist:
         return jsonify({'success': 'no', 'more': 'Email invalid or not in database'})
+
 
 # ------------------------------------------------ ARTICLES FUNCTIONS ------------------------------------------------ #
 
@@ -376,11 +396,13 @@ def add():
     else:
         return jsonify({'success': 'no', 'more': 'No token given'})
 
+
 def add_wargs(category, doc_type, data):
     Category.objects(name=category).update_one(set__name=category, upsert=True)
     category = Category.objects.get(name=category)
     timestamp = SomeUtils.generate_timestamp()
     author = data['author']
+    alias = data['alias']
     uni_text = SomeUtils.to_unicode(data['text'])
     data['text'] = uni_text
     if doc_type == 'comment':
@@ -391,26 +413,36 @@ def add_wargs(category, doc_type, data):
             doc.save()
             comment = Comment(beedoc=beedoc, time=timestamp, author=author, data=data)
             comment.save()
-            response = jsonify({'success': 'yes', 'more': "Comment for article " + str(beedoc) + " has been added/updated"})
+            response = jsonify(
+                {'success': 'yes', 'more': "Comment for article " + str(beedoc) + " has been added/updated"})
         except DoesNotExist:
             response = jsonify({'success': 'no', 'more': "Doc ref incorrect"})
         return response
     elif doc_type == 'article':
+        try:
+            RecognizedAuthor(email=author, alias=alias)
+        except DoesNotExist:
+            return jsonify({'success': 'no', 'more': "Not authorized to post in " + alias})
         id = SomeUtils.generate_id(data)
-        beedoc = BeeDoc(category=category, id=id, time=timestamp, author=author, title=data['title'], data=data)
+        beedoc = BeeDoc(category=category, id=id, time=timestamp, alias=alias, author=author, title=data['title'],
+                        data=data)
         beedoc.save()
-        response = jsonify({'success': 'yes', 'more': "Article with title " + str(data['title']) + " has been added/updated to the category " + \
-                            str(beedoc.category.name)})
+        response = jsonify({'success': 'yes', 'more': "Article with title " + str(
+            data['title']) + " has been added/updated to the category " + \
+                                                      str(beedoc.category.name)})
+        SomeUtils.send_mail(author, None, 'You have submitted an article', 3)
+        SomeUtils.send_mail('ladotevi@enseirb-matmeca.fr', beedoc.id, 'Validation of article', 4)
         return response
     elif doc_type == 'flash':
         id = SomeUtils.generate_id(data)
         flash = FlashNews(id=id, time=timestamp, text=data['text'], author=author)
         flash.save()
         response = jsonify({'success': 'yes', 'more': "FlashNews " + str(flash.text) + " has been added/updated by " + \
-                            str(flash.author)})
+                                                      str(flash.author)})
         return response
     else:
         return jsonify({'success': 'no', 'more': "Error: Bad doc_type"})
+
 
 @mongo.route('/get_beedoc', methods=['GET'])
 @requires_token
@@ -421,7 +453,7 @@ def get_beedoc():
     """
     username = request.args.get('username', None)
     category_name = request.args.get('category', None)
-    author = request.args.get('author', None)
+    alias = request.args.get('alias', None)
     offset = request.args.get('offset', 0)
     token = request.headers.get('X-BeenewsAPI-Token', None)
 
@@ -437,20 +469,17 @@ def get_beedoc():
         try:
             category = Category.objects.get(name=category_name)
             if category_name == 'news':
-                if author in CategoryUtils.RECOGNIZED_AUTHOR:
-                    if author == 'all':
-                        beedocs = BeeDoc.objects(category=category, visibility=1)[offset:offset+10]
-                    else:
-                        beedocs = BeeDoc.objects(category=category, author=author, visibility=1)[offset:offset+10]
-                    response = [SomeUtils.beedoc_to_dict(beedoc) for beedoc in beedocs]
-                    if beedocs:
-                        return jsonify({'success': 'yes', 'more': response})
-                    else:
-                        return jsonify({'success': 'no', 'more': 'No Article found'})
+                if alias == 'all':
+                    beedocs = BeeDoc.objects(category=category, visibility=1)[offset:offset + 10]
                 else:
-                    return jsonify({'success': 'no', 'more': 'Unauthorized author asked'})
+                    beedocs = BeeDoc.objects(category=category, alias=alias, visibility=1)[offset:offset + 10]
+                response = [SomeUtils.beedoc_to_dict(beedoc) for beedoc in beedocs]
+                if beedocs:
+                    return jsonify({'success': 'yes', 'more': response})
+                else:
+                    return jsonify({'success': 'no', 'more': 'No Article found'})
             else:
-                beedocs = BeeDoc.objects(category=category, author='eirbmmk', visibility=1)[offset:offset+10]
+                beedocs = BeeDoc.objects(category=category, author='eirbmmk', visibility=1)[offset:offset + 10]
                 if beedocs:
                     response = [SomeUtils.beedoc_to_dict(beedoc) for beedoc in beedocs]
                     return jsonify({'success': 'yes', 'more': response})
@@ -460,6 +489,7 @@ def get_beedoc():
             return jsonify({'success': 'no', 'more': 'Category asked does not exist'})
     else:
         return jsonify({'success': 'no', 'more': 'No category given'})
+
 
 @mongo.route('/get_comment', methods=['GET'])
 @requires_token
@@ -496,13 +526,16 @@ def get_comment():
     else:
         return jsonify({'success': 'no', 'more': 'No Article reference given'})
 
+
 @mongo.route('/get_onews', methods=['GET'])
 def get_onews():
     import requests
+
     url = 'http://appli.eirbmmk.fr/News'
     headers = {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"}
     r = requests.post(url=url, headers=headers)
     return jsonify(onews=json.loads(r.text))
+
 
 @mongo.route('/like_state', methods=['POST'])
 @requires_token
@@ -577,17 +610,19 @@ def like_or_dislike():
     else:
         return jsonify({'success': 'no', 'more': 'No Article reference given'})
 
+
 @mongo.route('/get_flash', methods=['GET'])
 @requires_token
 def get_flash():
     offset = request.args.get('offset', 0)
 
-    flash_news = FlashNews.objects[offset:offset+10]
+    flash_news = FlashNews.objects[offset:offset + 10]
     if flash_news:
         response = [SomeUtils.flash_to_dict(flash_new) for flash_new in flash_news]
         return jsonify({'success': 'yes', 'more': response})
     else:
         return jsonify({'success': 'no', 'more': 'No flashnews found'})
+
 
 @mongo.route('/change_access', methods=['POST'])
 def change_access():
@@ -608,6 +643,7 @@ def change_access():
     else:
         return jsonify({'success': 'yes', 'more': 'Password incorrect'})
 
+
 @mongo.route('/set_visibility', methods=['POST'])
 def set_visibility():
     infos = request.get_json()
@@ -615,23 +651,66 @@ def set_visibility():
     password = infos['password']
     visibility = infos['visibility']
 
+    if visibility not in [0, 1]:
+        return jsonify({'success': 'no', 'more': 'visibility must be 0 or 1'})
+
     # Change this later
     if password == 'ladotevirherveux':
         try:
             beedoc = BeeDoc.objects.get(id=beedoc)
             beedoc.visibility = int(visibility)
             beedoc.save()
+            if visibility == 0:
+                SomeUtils.send_mail(beedoc.author, None, 'Sorry for your article', 5)
+            else:
+                SomeUtils.send_mail(beedoc.author, None, 'Validation of your article', 6)
             return jsonify({'success': 'yes', 'more': 'Visibility changed to ' + str(visibility)})
         except DoesNotExist:
             return jsonify({'success': 'no', 'more': 'BeeDoc does not exist'})
     else:
         return jsonify({'success': 'yes', 'more': 'Password incorrect'})
 
+
+@mongo.route('/recognized_author', methods=['POST'])
+def add_recognized_author():
+    infos = request.get_json()
+    username = infos['username']
+    password = infos['password']
+    alias = infos['alias']
+
+    if alias not in CategoryUtils.RECOGNIZED_ALIASES:
+        return jsonify({'success': 'no', 'more': 'Alias not recognized'})
+
+    # Change this later
+    if password == 'ladotevirherveux':
+        try:
+            beeuser = BeeUser.objects.get(email=username)
+            rec_author = RecognizedAuthor(email=beeuser.email, alias=alias)
+            rec_author.save()
+            return jsonify({'success': 'yes', 'more': username + ' added to recognized author!'})
+        except DoesNotExist:
+            return jsonify({'success': 'no', 'more': 'User does not exist'})
+    else:
+        return jsonify({'success': 'yes', 'more': 'Password incorrect'})
+
+
 # ------------------------------------------------ WEB FUNCTIONS ------------------------------------------------ #
 @mongo.route('/web/home')
 def web_home():
+    return render_template('home.html',
+                           page_name='Home')
+
+@mongo.route('/web/post_page')
+def web_post_page():
     return render_template('post.html',
                            page_name='Post')
+
+
+@mongo.route('/web/confirm')
+def web_confirm():
+    return render_template('confirm.html',
+                           page_name='Confirmation')
+
 
 @mongo.route('/web/post', methods=['POST'])
 def web_post():
@@ -652,6 +731,7 @@ def web_post():
     category = article['category']
     doc_type = article['type']
     data = article['data']
+    data['author'] = beeuser.email
 
     if beeuser.access >= 1:
         response = add_wargs(category, doc_type, data)
