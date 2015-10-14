@@ -5,9 +5,9 @@ angular.module('starter.controllers', [])
 		email: "",
 		password: "",
 		remember: "no"
-	}
+	};
 
-	$scope.loginData = $scope.defaultloginData
+	$scope.loginData = $scope.defaultloginData;
 
 	var sanitizeCredentials = function(credentials) {
 		return {
@@ -22,7 +22,7 @@ angular.module('starter.controllers', [])
 	 	if ($scope.userData != {}) {
 	       $http({
 			  method: 'POST',
-			  url: 'http://localhost:5000/login',
+			  url: 'http://178.62.61.89/login',
 			  headers: {
 			    'Content-Type': 'application/json',
 			    'X-BeenewsAPI-Token': $scope.userData.token
@@ -44,13 +44,13 @@ angular.module('starter.controllers', [])
 
 					$state.go('menu.about');
 			    } else {
-			    	$ionicLoading.show({ template: 'Login with token failed: ' + response.data.more, noBackdrop: true, duration: 1000 });
+			    	$ionicLoading.show({ template: 'Login with token failed: ' + response.data.more, noBackdrop: true, duration: 2000 });
 			    }
 			  }, function errorCallback(response) {
-			    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 1000 });
+			    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 2000 });
 			  });
 		} else {
-			$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 1000 });
+			$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 2000 });
 		}
 	};
 
@@ -64,7 +64,7 @@ angular.module('starter.controllers', [])
     loginData = sanitizeCredentials(loginData);
     $http({
 	  method: 'POST',
-	  url: 'http://localhost:5000/login',
+	  url: 'http://178.62.61.89/login',
 	  headers: {
 	    'Content-Type': 'application/json'
 	  },
@@ -87,10 +87,10 @@ angular.module('starter.controllers', [])
 
 			$state.go('menu.about');
 	    } else {
-	    	$ionicLoading.show({ template: 'Connection failed: ' + response.data.more, noBackdrop: true, duration: 1000 });
+	    	$ionicLoading.show({ template: 'Connection failed: ' + response.data.more, noBackdrop: true, duration: 2000 });
 	    }
 	  }, function errorCallback(response) {
-	    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 1000 });
+	    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 2000 });
 	  });
   };
 
@@ -119,13 +119,13 @@ angular.module('starter.controllers', [])
  	if ($scope.userData != {}) {
        $http({
 		  method: 'POST',
-		  url: 'http://localhost:5000/reinit_pass',
+		  url: 'http://178.62.61.89/reinit_pass',
 		  headers: {
 		    'Content-Type': 'application/json',
 		    'X-BeenewsAPI-Token': $scope.userData.token
 		  },
 		  data: {
-		    "username": loginData.email
+		    "username": email
 		  },
 		}).then(function successCallback(response) {
 			$ionicLoading.hide();
@@ -133,13 +133,13 @@ angular.module('starter.controllers', [])
 				$ionicLoading.show({ template: 'Password sent successfully', noBackdrop: true, duration: 1000 });
 				$scope.closeLPass();
 		    } else {
-		    	$ionicLoading.show({ template: 'Password sending failed: ' + response.data.more, noBackdrop: true, duration: 1000 });
+		    	$ionicLoading.show({ template: 'Password sending failed: ' + response.data.more, noBackdrop: true, duration: 2000 });
 		    }
 		  }, function errorCallback(response) {
-		    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 1000 });
+		    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 2000 });
 		  });
 	} else {
-		$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 1000 });
+		$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 2000 });
 	}
   };
 })

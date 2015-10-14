@@ -20,11 +20,14 @@ angular.module('starter.controllers')
 		return converted;
 	};
 	$scope.getNews = function(){
+		$ionicLoading.show({
+	      template: '<ion-spinner icon="spiral"></ion-spinner>'
+	    });
 		$scope.userData = JSON.parse($window.localStorage['refs'] || '{}');
      	if ($scope.userData != {}) {
 		    $http({
 			  method: 'GET',
-			  url: 'http://localhost:5000/get_beedoc',
+			  url: 'http://178.62.61.89/get_beedoc',
 			  headers: {
 			    'Content-Type': 'application/json',
 			    'X-BeenewsAPI-Token': $scope.userData.token
@@ -32,9 +35,10 @@ angular.module('starter.controllers')
 			  params: {
 			  	'username' : $scope.userData.username,
 			  	'category' : 'news',
-			  	'author': $stateParams.author ||'all'
+			  	'alias': $stateParams.alias ||'all'
 			  }
 			}).then(function successCallback(response) {
+				$ionicLoading.hide();
 				if (response.data.success == 'yes') {
 					$scope.news = $scope.convertTimestamp(response.data.more);
 					$window.localStorage['news'] = JSON.stringify($scope.news);
@@ -43,21 +47,17 @@ angular.module('starter.controllers')
 			    	$state.go('menu.news', {author: 'all'});
 			    }
 			}, function errorCallback(response) {
-			    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 1000 });
+				$ionicLoading.hide();
+			    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 2000 });
 			});
 		} else {
-			$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 1000 });
+			$ionicLoading.hide();
+			$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 2000 });
 		}
 	};
 
-	$ionicLoading.show({
-      template: '<ion-spinner icon="spiral"></ion-spinner>'
-    });
-
 	$scope.getNews();
 
-	$ionicLoading.hide();
-  
     $scope.doRefresh = function() {
 	    $scope.getNews();
 	    $scope.$broadcast('scroll.refreshComplete');

@@ -27,7 +27,7 @@ angular.module('starter.controllers')
      	if ($scope.userData != {}) {
 		    $http({
 			  method: 'POST',
-			  url: 'http://localhost:5000/like_state',
+			  url: 'http://178.62.61.89/like_state',
 			  headers: {
 			    'Content-Type': 'application/json',
 			    'X-BeenewsAPI-Token': $scope.userData.token
@@ -55,13 +55,13 @@ angular.module('starter.controllers')
 						$scope.dislike_text = 'J\'aime Pas';
 					}
 			    } else {
-			    	$ionicLoading.show({ template: 'Fetch like_state failed: ' + response.data.more, noBackdrop: true, duration: 1000 });
+			    	$ionicLoading.show({ template: 'Fetch like_state failed: ' + response.data.more, noBackdrop: true, duration: 2000 });
 			    }
 			}, function errorCallback(response) {
-			    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 1000 });
+			    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 2000 });
 			});
 		} else {
-			$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 1000 });
+			$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 2000 });
 		}
 	};
 
@@ -72,7 +72,7 @@ angular.module('starter.controllers')
 		$scope.article = $scope.news[$stateParams.id];
 		$scope.check_like();
 	} else {
-		$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 1000 });
+		$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 2000 });
 	}
 
 	$scope.getComment = function(){
@@ -81,7 +81,7 @@ angular.module('starter.controllers')
 	     	if ($scope.userData != {}) {
 			    $http({
 				  method: 'GET',
-				  url: 'http://localhost:5000/get_comment',
+				  url: 'http://178.62.61.89/get_comment',
 				  headers: {
 				    'Content-Type': 'application/json',
 				    'X-BeenewsAPI-Token': $scope.userData.token
@@ -95,13 +95,13 @@ angular.module('starter.controllers')
 						$scope.comments = $scope.convertTimestamp(response.data.more);
 						$scope.offset = response.data.offset;
 				    } else {
-				    	$ionicLoading.show({ template: 'Fetch comments failed: ' + response.data.more, noBackdrop: true, duration: 1000 });
+				    	$ionicLoading.show({ template: 'Fetch comments failed: ' + response.data.more, noBackdrop: true, duration: 2000 });
 				    }
 				}, function errorCallback(response) {
-				    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 1000 });
+				    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 2000 });
 				});
 			} else {
-				$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 1000 });
+				$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 2000 });
 			}
 		} else {
 			$scope.comments = [];
@@ -119,7 +119,7 @@ angular.module('starter.controllers')
      	if ($scope.userData != {}) {
 		    $http({
 			  method: 'POST',
-			  url: 'http://localhost:5000/add',
+			  url: 'http://178.62.61.89/add',
 			  headers: {
 			    'Content-Type': 'application/json',
 			    'X-BeenewsAPI-Token': $scope.userData.token
@@ -133,16 +133,17 @@ angular.module('starter.controllers')
 			}).then(function successCallback(response) {
 				if (response.data.success == 'yes') {
 					$scope.comment = $scope.convertTimestamp(response.data.more);
+					$scope.article.comments += 1;
 					$scope.getComment();
 					$scope.comment_text.comment = '';
 			    } else {
-			    	$ionicLoading.show({ template: 'Add comment failed: ' + response.data.more, noBackdrop: true, duration: 1000 });
+			    	$ionicLoading.show({ template: 'Add comment failed: ' + response.data.more, noBackdrop: true, duration: 2000 });
 			    }
 			}, function errorCallback(response) {
-			    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 1000 });
+			    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 2000 });
 			});
 		} else {
-			$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 1000 });
+			$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 2000 });
 		}
 	};
 
@@ -151,7 +152,7 @@ angular.module('starter.controllers')
      	if ($scope.userData != {}) {
 		    $http({
 			  method: 'POST',
-			  url: 'http://localhost:5000/likes',
+			  url: 'http://178.62.61.89/likes',
 			  headers: {
 			    'Content-Type': 'application/json',
 			    'X-BeenewsAPI-Token': $scope.userData.token
@@ -179,13 +180,13 @@ angular.module('starter.controllers')
 						$scope.check_like();
 					}
 			    } else {
-			    	$ionicLoading.show({ template: 'Add action failed: ' + response.data.more, noBackdrop: true, duration: 1000 });
+			    	$ionicLoading.show({ template: 'Add action failed: ' + response.data.more, noBackdrop: true, duration: 2000 });
 			    }
 			}, function errorCallback(response) {
-			    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 1000 });
+			    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 2000 });
 			});
 		} else {
-			$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 1000 });
+			$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 2000 });
 		}
 	};
 

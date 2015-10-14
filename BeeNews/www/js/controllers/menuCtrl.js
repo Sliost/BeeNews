@@ -15,7 +15,7 @@ angular.module('starter.controllers')
 	     	if ($scope.userData != {}) {
 		       $http({
 				  method: 'POST',
-				  url: 'http://localhost:5000/logout',
+				  url: 'http://178.62.61.89/logout',
 				  headers: {
 				    'Content-Type': 'application/json',
 				    'X-BeenewsAPI-Token': $scope.userData.token
@@ -29,22 +29,22 @@ angular.module('starter.controllers')
 						$ionicLoading.show({ template: 'Log out successful', noBackdrop: true, duration: 1000 });
 						$state.go('login');
 				    } else {
-				    	$ionicLoading.show({ template: 'Log out failed: ' + response.data.more, noBackdrop: true, duration: 1000 });
+				    	$ionicLoading.show({ template: 'Log out failed: ' + response.data.more, noBackdrop: true, duration: 2000 });
 				    }
 				  }, function errorCallback(response) {
-				    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 1000 });
+				    $ionicLoading.show({ template: 'An error occured. Retry later', noBackdrop: true, duration: 2000 });
 				  });
 			} else {
-				$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 1000 });
+				$ionicLoading.show({ template: 'Impossible to load data', noBackdrop: true, duration: 2000 });
 			}
 	     } else {
-	     	$ionicLoading.show({ template: 'Log out cancelled', noBackdrop: true, duration: 1000 });
+	     	$ionicLoading.show({ template: 'Log out cancelled', noBackdrop: true, duration: 2000 });
 	     }
 	   });
  	};
 
- 	$scope.fetchNews = function(author) {
- 		$state.go('menu.news', {author: author});
+ 	$scope.fetchNews = function(alias) {
+ 		$state.go('menu.news', {alias: alias});
  	};
 	
 })
