@@ -19,10 +19,17 @@
 
   		<div class="list list-inset">
 			<label class="item item-input">
-				<input type="text" placeholder="Titre" ng-model="articleData.data.title" required>
+				<select ng-model="articleData.data.alias">
+					<option value="all">Toutes les catégories</option>
+					<option value="bde">BDE</option>
+					<option value="bds">BDS</option>
+					<option value="bda">BDA</option>
+					<option value="bar">Bar</option>
+					<option value="jteirb">JT'eirb</option>
+				</select>
 			</label>
 			<label class="item item-input">
-				<input type="text" placeholder="Auteur" ng-model="articleData.data.author" required>
+				<input type="text" placeholder="Titre" ng-model="articleData.data.title" required>
 			</label>
 			<label class="item item-input">
 				<textarea style="height:300px;" placeholder="Texte" ng-model="articleData.data.text" required></textarea>
