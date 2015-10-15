@@ -34,7 +34,7 @@ class Calendar(Document):
 
 
 class RecognizedAuthor(Document):
-    email = StringField(required=True)
+    pseudo = StringField(required=True)
     alias = StringField(required=True, default='all')
 
 
@@ -191,7 +191,7 @@ def sign_up():
             sign_up_date = long(datetime.now().strftime("%s"))
             calendar = Calendar(email=username, sign_up_date=sign_up_date, last_seen=sign_up_date)
             calendar.save()
-            rec_author = RecognizedAuthor(email=username, alias='all')
+            rec_author = RecognizedAuthor(pseudo=pseudo, alias='all')
             rec_author.save()
 
     SomeUtils.send_mail(username, password, 'Welcome to BeeNewsFamily', 1)
@@ -419,7 +419,7 @@ def add_wargs(author, category, doc_type, data):
         return response
     elif doc_type == 'article':
         try:
-            RecognizedAuthor(email=author, alias=alias)
+            RecognizedAuthor(pseudo=author, alias=alias)
         except DoesNotExist:
             return jsonify({'success': 'no', 'more': "Not authorized to post in " + alias})
         id = SomeUtils.generate_id(data)
@@ -683,7 +683,7 @@ def add_recognized_author():
     if password == 'ladotevirherveux':
         try:
             beeuser = BeeUser.objects.get(email=username)
-            rec_author = RecognizedAuthor(email=beeuser.email, alias=alias)
+            rec_author = RecognizedAuthor(pseudo=beeuser.pseudo, alias=alias)
             rec_author.save()
             return jsonify({'success': 'yes', 'more': username + ' added to recognized author!'})
         except DoesNotExist:
@@ -730,9 +730,8 @@ def web_post():
     doc_type = article['type']
     data = article['data']
 
-    return jsonify({'success': 'no', 'more': 'Access denied'})
-    # if beeuser.access >= 1:
-    #     response = add_wargs(beeuser.pseudo, category, doc_type, data)
-    #     return response
-    # else:
-    #     return jsonify({'success': 'no', 'more': 'Access denied'})
+    if beeuser.access >= 1:
+        response = add_wargs(beeuser.pseudo, category, doc_type, data)
+        return response
+    else:
+        return jsonify({'success': 'no', 'more': 'Access denied'})
