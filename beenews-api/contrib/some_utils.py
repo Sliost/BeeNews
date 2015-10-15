@@ -95,7 +95,6 @@ class SomeUtils:
 
     @staticmethod
     def generate_id(data):
-        author = SomeUtils.normalize_name(data['author'])
         word1 = SomeUtils.generate_word(2)
         word2 = SomeUtils.generate_word(3)
         if 'title' in data.keys():
@@ -156,7 +155,7 @@ class SomeUtils:
             1: 'Hi!\n\nThank you for subscribing to BeeNews.\nHere is your password: ' + data + '\n\nYou need to change it ASAP.\n\nEnjoy!\n\nBeeNews',
             2: 'Hi again!\n\nYou have requested a password change.\nHere is your new password: ' + data + '\n\nYou need to change it ASAP too.\n\nEnjoy!\n\nBeeNews',
             3: 'Hi!\n\nYou have submitted an article. Please wait for the admin to validate it.\n\nIt\'ll be done ASAP.\n\nThanks for publishing!\n\nBeeNews',
-            4: 'Hi Admin!\n\nAn article has been submitted.\nbeedoc: ' + data + 'Please validate or delete it.\n\nBeeNews',
+            4: 'Hi Admin!\n\nAn article has been submitted.\nbeedoc: ' + data + '\n\nPlease validate or delete it.\n\nBeeNews',
             5: 'Hi!\n\nYour article has been deleted due to its inappropriate content. Try again once!\n\nBeeNews',
             6: 'Hi!\n\nYour article has been validated. Thanks for publishing!\n\nBeeNews'
         }

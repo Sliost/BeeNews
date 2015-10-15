@@ -389,7 +389,7 @@ def add():
             except DoesNotExist:
                 return jsonify({'success': 'no', 'more': 'Token/email invalid'})
         if beeuser.access >= 1:
-            response = add_wargs(beeuser.pseudo, category, doc_type, data)
+            response = add_wargs(beeuser.email, beeuser.pseudo, category, doc_type, data)
             return response
         else:
             return jsonify({'success': 'no', 'more': 'Access denied'})
@@ -397,7 +397,7 @@ def add():
         return jsonify({'success': 'no', 'more': 'No token given'})
 
 
-def add_wargs(author, category, doc_type, data):
+def add_wargs(email, author, category, doc_type, data):
     Category.objects(name=category).update_one(set__name=category, upsert=True)
     category = Category.objects.get(name=category)
     timestamp = SomeUtils.generate_timestamp()
@@ -428,7 +428,7 @@ def add_wargs(author, category, doc_type, data):
         beedoc.save()
         response = jsonify({'success': 'yes', 'more': "Article with title " + str(
                             data['title']) + " has been added/updated to the category " + str(beedoc.category.name)})
-        SomeUtils.send_mail(author, None, 'You have submitted an article', 3)
+        SomeUtils.send_mail(email, '', 'You have submitted an article', 3)
         SomeUtils.send_mail('ladotevi@enseirb-matmeca.fr', beedoc.id, 'Validation of article', 4)
         return response
     elif doc_type == 'flash':
@@ -658,10 +658,14 @@ def set_visibility():
             beedoc = BeeDoc.objects.get(id=beedoc)
             beedoc.visibility = int(visibility)
             beedoc.save()
+            try:
+                beeuser = BeeUser.objects.get(pseudo=beedoc.author)
+            except DoesNotExist:
+                return jsonify({'success': 'no', 'more': 'Invalid author'})
             if visibility == 0:
-                SomeUtils.send_mail(beedoc.author, None, 'Sorry for your article', 5)
+                SomeUtils.send_mail(beeuser.email, '', 'Sorry for your article', 5)
             else:
-                SomeUtils.send_mail(beedoc.author, None, 'Validation of your article', 6)
+                SomeUtils.send_mail(beeuser.email, '', 'Validation of your article', 6)
             return jsonify({'success': 'yes', 'more': 'Visibility changed to ' + str(visibility)})
         except DoesNotExist:
             return jsonify({'success': 'no', 'more': 'BeeDoc does not exist'})
@@ -731,7 +735,7 @@ def web_post():
     data = article['data']
 
     if beeuser.access >= 1:
-        response = add_wargs(beeuser.pseudo, category, doc_type, data)
+        response = add_wargs(email, beeuser.pseudo, category, doc_type, data)
         return response
     else:
         return jsonify({'success': 'no', 'more': 'Access denied'})
