@@ -107,7 +107,7 @@ class SomeUtils:
         word1 = SomeUtils.generate_word(4)
         word2 = SomeUtils.generate_word(8)
 
-        user = email.split('@')[0]
+        user = SomeUtils.normalize_name(email.split('@')[0])
         # length is in hours
         expiration_date = datetime.now() + timedelta(hours=length)
         token = word1 + str(expiration_date.strftime("%s")) + word2 + user + str(len(user))
