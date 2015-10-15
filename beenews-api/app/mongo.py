@@ -730,8 +730,9 @@ def web_post():
     doc_type = article['type']
     data = article['data']
 
-    if beeuser.access >= 1:
-        response = add_wargs(beeuser.pseudo, category, doc_type, data)
-        return response
-    else:
-        return jsonify({'success': 'no', 'more': 'Access denied'})
+    return jsonify({'success': 'no', 'more': 'Access denied'})
+    # if beeuser.access >= 1:
+    #     response = add_wargs(beeuser.pseudo, category, doc_type, data)
+    #     return response
+    # else:
+    #     return jsonify({'success': 'no', 'more': 'Access denied'})
