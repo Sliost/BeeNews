@@ -401,7 +401,6 @@ def add_wargs(email, author, category, doc_type, data):
     Category.objects(name=category).update_one(set__name=category, upsert=True)
     category = Category.objects.get(name=category)
     timestamp = SomeUtils.generate_timestamp()
-    alias = data['alias']
     uni_text = SomeUtils.to_unicode(data['text'])
     data['text'] = uni_text
     if doc_type == 'comment':
@@ -418,6 +417,7 @@ def add_wargs(email, author, category, doc_type, data):
             response = jsonify({'success': 'no', 'more': "Doc ref incorrect"})
         return response
     elif doc_type == 'article':
+        alias = data['alias']
         try:
             RecognizedAuthor(pseudo=author, alias=alias)
         except DoesNotExist:
