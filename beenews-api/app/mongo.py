@@ -389,7 +389,7 @@ def add():
             except DoesNotExist:
                 return jsonify({'success': 'no', 'more': 'Token/email invalid'})
         if beeuser.access >= 1:
-            response = add_wargs(category, doc_type, data)
+            response = add_wargs(beeuser.pseudo, category, doc_type, data)
             return response
         else:
             return jsonify({'success': 'no', 'more': 'Access denied'})
@@ -397,11 +397,10 @@ def add():
         return jsonify({'success': 'no', 'more': 'No token given'})
 
 
-def add_wargs(category, doc_type, data):
+def add_wargs(author, category, doc_type, data):
     Category.objects(name=category).update_one(set__name=category, upsert=True)
     category = Category.objects.get(name=category)
     timestamp = SomeUtils.generate_timestamp()
-    author = data['author']
     alias = data['alias']
     uni_text = SomeUtils.to_unicode(data['text'])
     data['text'] = uni_text
@@ -428,8 +427,7 @@ def add_wargs(category, doc_type, data):
                         data=data)
         beedoc.save()
         response = jsonify({'success': 'yes', 'more': "Article with title " + str(
-            data['title']) + " has been added/updated to the category " + \
-                                                      str(beedoc.category.name)})
+                            data['title']) + " has been added/updated to the category " + str(beedoc.category.name)})
         SomeUtils.send_mail(author, None, 'You have submitted an article', 3)
         SomeUtils.send_mail('ladotevi@enseirb-matmeca.fr', beedoc.id, 'Validation of article', 4)
         return response
@@ -731,10 +729,9 @@ def web_post():
     category = article['category']
     doc_type = article['type']
     data = article['data']
-    data['author'] = beeuser.pseudo
 
     if beeuser.access >= 1:
-        response = add_wargs(category, doc_type, data)
+        response = add_wargs(beeuser.pseudo, category, doc_type, data)
         return response
     else:
         return jsonify({'success': 'no', 'more': 'Access denied'})

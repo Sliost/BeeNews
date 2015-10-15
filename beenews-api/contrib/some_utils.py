@@ -95,12 +95,13 @@ class SomeUtils:
 
     @staticmethod
     def generate_id(data):
+        author = SomeUtils.normalize_name(data['author'])
         word1 = SomeUtils.generate_word(2)
         word2 = SomeUtils.generate_word(3)
         if 'title' in data.keys():
-            return word1 + SomeUtils.normalize_name(data['title']) + word2 + data['author']
+            return word1 + SomeUtils.normalize_name(data['title']) + word2 + SomeUtils.normalize_name(data['alias'])
         else:
-            return word1 + SomeUtils.normalize_name(data['text']) + word2 + data['author']
+            return word1 + SomeUtils.normalize_name(data['text']) + word2 + SomeUtils.normalize_name(data['author'])
 
     @staticmethod
     def genarate_token(email, length):
