@@ -57,7 +57,6 @@ class SomeUtils:
                 res = unicode(res, "utf-8")
             except UnicodeDecodeError:
                 res = unicode(res, "ISO-8859-1")
-        res = unidecode(res)
         return res
 
     @staticmethod
