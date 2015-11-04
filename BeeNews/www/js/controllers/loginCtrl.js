@@ -42,7 +42,7 @@ angular.module('starter.controllers', [])
 					$window.localStorage['refs'] = JSON.stringify(refs);
 					$ionicLoading.show({ template: 'Connection successful', noBackdrop: true, duration: 1000 });
 
-					$state.go('menu.about');
+					$state.go('menu.news', {alias: 'all'});
 			    } else {
 			    	$ionicLoading.show({ template: 'Login with token failed: ' + response.data.more, noBackdrop: true, duration: 2000 });
 			    }
@@ -85,7 +85,7 @@ angular.module('starter.controllers', [])
 			$window.localStorage['refs'] = JSON.stringify(refs);
 			$ionicLoading.show({ template: 'Connection successful', noBackdrop: true, duration: 1000 });
 
-			$state.go('menu.about');
+			$state.go('menu.news', {alias: 'all'});
 	    } else {
 	    	$ionicLoading.show({ template: 'Connection failed: ' + response.data.more, noBackdrop: true, duration: 2000 });
 	    }

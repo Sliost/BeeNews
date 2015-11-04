@@ -4,6 +4,10 @@ angular.module('starter.controllers')
 	$scope.comments = [];
 	$scope.comment_text = {comment: ''}
 
+	var addZeroBefore = function(n) {
+	  return (n < 10 ? '0' : '') + n;
+	};
+
 	$scope.convertTimestamp = function(news){
 		converted = news
 		len = news.length
@@ -13,9 +17,9 @@ angular.module('starter.controllers')
 			var year = a.getFullYear();
 			var month = months[a.getMonth()];
 			var date = a.getDate();
-			var hour = a.getHours();
-			var min = a.getMinutes();
-			var sec = a.getSeconds();
+			var hour = addZeroBefore(a.getHours());
+			var min = addZeroBefore(a.getMinutes());
+			var sec = addZeroBefore(a.getSeconds());
 			var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
 			converted[i].time = time;
 		}

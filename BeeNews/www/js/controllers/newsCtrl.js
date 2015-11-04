@@ -1,6 +1,9 @@
 angular.module('starter.controllers')
 
-.controller('newsCtrl', function($scope, $ionicLoading, $http, $window, $state, $stateParams, $filter) {
+.controller('newsCtrl', function($scope, $ionicLoading, $http, $window, $state, $stateParams, $filter, $ionicPopup) {
+	var addZeroBefore = function(n) {
+	  return (n < 10 ? '0' : '') + n;
+	};
 	$scope.convertTimestamp = function(news){
 		converted = news
 		len = news.length
@@ -10,15 +13,16 @@ angular.module('starter.controllers')
 			var year = a.getFullYear();
 			var month = months[a.getMonth()];
 			var date = a.getDate();
-			var hour = a.getHours();
-			var min = a.getMinutes();
-			var sec = a.getSeconds();
+			var hour = addZeroBefore(a.getHours());
+			var min = addZeroBefore(a.getMinutes());
+			var sec = addZeroBefore(a.getSeconds());
 			var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
 			converted[i].time = time;
 			converted[i].snip = $filter('limitTo')(news[i].data.text, 50, 0) + '...';
 		}
 		return converted;
 	};
+
 	$scope.getNews = function(){
 		$ionicLoading.show({
 	      template: '<ion-spinner icon="spiral"></ion-spinner>'
@@ -43,8 +47,8 @@ angular.module('starter.controllers')
 					$scope.news = $scope.convertTimestamp(response.data.more);
 					$window.localStorage['news'] = JSON.stringify($scope.news);
 			    } else {
-			    	$ionicLoading.show({ template: 'Fetch news failed: ' + response.data.more, noBackdrop: true, duration: 1000 });
-			    	$state.go('menu.news', {author: 'all'});
+			    	$ionicLoading.show({ template: 'Fetch news failed: ' + response.data.more, noBackdrop: true, duration: 2000 });
+			    	$state.go('menu.news', {alias: 'all'});
 			    }
 			}, function errorCallback(response) {
 				$ionicLoading.hide();
